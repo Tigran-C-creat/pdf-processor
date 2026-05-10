@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   postgres:
     image: postgres:16
@@ -35,10 +33,17 @@ services:
       - rabbitmq
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+
+      # PostgreSQL
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=pdfdb;Username=postgres;Password=password"
-      Rabbit__Host: rabbitmq
+
+      # RabbitMQ
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Port: 5672
+      RabbitMQ__User: guest
+      RabbitMQ__Password: guest
     ports:
-      - "8080:8080"
+      - "5000:8080"
 
   worker:
     build:
@@ -49,8 +54,14 @@ services:
       - postgres
       - rabbitmq
     environment:
+      # PostgreSQL
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=pdfdb;Username=postgres;Password=password"
-      Rabbit__Host: rabbitmq
+
+      # RabbitMQ
+      RabbitMQ__Host: rabbitmq
+      RabbitMQ__Port: 5672
+      RabbitMQ__User: guest
+      RabbitMQ__Password: guest
 
 volumes:
   postgres_data:
