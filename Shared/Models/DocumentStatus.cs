@@ -1,5 +1,8 @@
 ﻿namespace Shared.Models;
 
+/// <summary>
+/// Статус обработки PDF‑документа.
+/// </summary>
 public enum DocumentStatus
 {
     Pending = 0,
