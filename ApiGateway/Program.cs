@@ -1,7 +1,8 @@
-using ApiGateway.Data;
 using ApiGateway.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
+using Shared.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,13 +18,17 @@ builder.Services.AddSingleton<IConnection>(sp =>
 
     var factory = new ConnectionFactory
     {
-        HostName = config["Host"],
+        HostName = config["Host"] ?? "rabbitmq",
         Port = int.Parse(config["Port"] ?? "5672"),
         UserName = config["User"] ?? "guest",
-        Password = config["Password"] ?? "guest",
-        ConsumerDispatchConcurrency = 1 
+        Password = config["Password"] ?? "guest"
     };
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
 });
 
 builder.Services.AddScoped<IDocumentService, DocumentService>();

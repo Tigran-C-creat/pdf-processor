@@ -11,6 +11,11 @@ services:
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -22,6 +27,11 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   apigateway:
     build:
@@ -29,14 +39,14 @@ services:
       dockerfile: ApiGateway/Dockerfile
     container_name: apigateway
     depends_on:
-      - postgres
-      - rabbitmq
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-
       # PostgreSQL
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=pdfdb;Username=postgres;Password=password"
-
       # RabbitMQ
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Port: 5672
@@ -44,6 +54,8 @@ services:
       RabbitMQ__Password: guest
     ports:
       - "5000:8080"
+    volumes:
+      - storage_data:/app/storage  
 
   worker:
     build:
@@ -51,17 +63,21 @@ services:
       dockerfile: BackgroundWorker/Dockerfile
     container_name: worker
     depends_on:
-      - postgres
-      - rabbitmq
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
       # PostgreSQL
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=pdfdb;Username=postgres;Password=password"
-
       # RabbitMQ
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Port: 5672
       RabbitMQ__User: guest
       RabbitMQ__Password: guest
+    volumes:
+      - storage_data:/app/storage  
 
 volumes:
   postgres_data:
+  storage_data:

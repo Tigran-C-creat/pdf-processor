@@ -1,5 +1,4 @@
-﻿using ApiGateway.Data;
-using ApiGateway.Models;
+﻿using Shared.Data;
 using RabbitMQ.Client;
 using Shared.Models;
 using System.Text;
@@ -38,13 +37,14 @@ public sealed class DocumentService(
             FilePath = filePath,
             Status = DocumentStatus.Pending,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
+            UpdatedAt = DateTime.UtcNow,
+            ProcessedAt = null
         };
 
         db.Documents.Add(doc);
         await db.SaveChangesAsync();
 
-        var channel = await rabbit.CreateChannelAsync();
+        await using var channel = await rabbit.CreateChannelAsync();
 
         await channel.QueueDeclareAsync(
             queue: QueueName,

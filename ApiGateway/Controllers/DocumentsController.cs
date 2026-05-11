@@ -1,12 +1,8 @@
-﻿using ApiGateway.Data;
-using ApiGateway.Models;
+﻿using Shared.Data;
+using Shared.Models;
 using ApiGateway.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using RabbitMQ.Client;
-using Shared.Models;
-using System.Text;
-using System.Text.Json;
 
 namespace ApiGateway.Controllers;
 
@@ -19,19 +15,13 @@ namespace ApiGateway.Controllers;
 public class DocumentsController : ControllerBase
 {
     private readonly ApplicationDbContext _db;
-    private readonly IConnection _rabbitConnection;
-    private readonly IWebHostEnvironment _env;
     private readonly IDocumentService _documentService;
 
     public DocumentsController(
         ApplicationDbContext db,
-        IConnection rabbitConnection,
-        IWebHostEnvironment env,
         IDocumentService documentService)
     {
         _db = db;
-        _rabbitConnection = rabbitConnection;
-        _env = env;
         _documentService = documentService;
     }
 
@@ -96,11 +86,13 @@ public class DocumentsController : ControllerBase
         if (doc.Status == DocumentStatus.Pending || doc.Status == DocumentStatus.Processing)
             return StatusCode(202, "Документ ещё обрабатывается");
 
+        if (doc.Status == DocumentStatus.Failed)
+            return StatusCode(500, "Ошибка обработки документа");
+
         return Ok(new
         {
             id = doc.Id,
-            text = doc.TextContent
+            text = doc.TextContent ?? string.Empty
         });
     }
-
 }

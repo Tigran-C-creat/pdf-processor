@@ -1,7 +1,8 @@
-﻿using ApiGateway.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Shared.Models;
 
-namespace ApiGateway.Data;
+
+namespace Shared.Data;
 
 /// <summary>
 /// Контекст базы данных приложения.
