@@ -7,14 +7,16 @@ WORKDIR /src
 
 # Копируем ВСЕ csproj
 COPY ApiGateway/*.csproj ApiGateway/
-COPY Shared/*.csproj Shared/
-COPY BackgroundWorker/*.csproj BackgroundWorker/
+COPY Persistence/*.csproj Persistence/
+COPY Contracts/*.csproj Contracts/
 
-# Восстанавливаем зависимости ДЛЯ ВСЕГО solution
+# Восстанавливаем зависимости
 RUN dotnet restore ApiGateway/ApiGateway.csproj
 
 # Копируем весь код
-COPY . .
+COPY ApiGateway/ ApiGateway/
+COPY Persistence/ Persistence/
+COPY Contracts/ Contracts/
 
 # Публикуем
 RUN dotnet publish ApiGateway/ApiGateway.csproj -c Release -o /app/publish

@@ -1,9 +1,10 @@
-﻿using Shared.Data;
+﻿using Persistence.Data;
 using RabbitMQ.Client;
-using Shared.Models;
+using Persistence.Models;
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Contracts.Messages;
 
 
 namespace ApiGateway.Services;
@@ -45,7 +46,6 @@ public sealed class DocumentService(
             FilePath = filePath,
             Status = DocumentStatus.Pending,
             CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
             ProcessedAt = null
         };
 

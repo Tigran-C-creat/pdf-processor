@@ -1,4 +1,4 @@
-﻿namespace Shared.Models;
+﻿namespace Persistence.Models;
 
 public class Document
 {
@@ -14,10 +14,8 @@ public class Document
 
     public string? TextContent { get; set; }
 
-    public DateTime? ProcessedAt { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? ProcessedAt { get; set; }
 
 }

@@ -1,4 +1,4 @@
-﻿namespace Shared.Models;
+﻿namespace Contracts.Messages;
 
 /// <summary>
 /// Сообщение, отправляемое в RabbitMQ для обработки PDF‑файла.
@@ -8,3 +8,4 @@ public sealed class PdfProcessingMessage
     public Guid DocumentId { get; set; }
     public string FilePath { get; set; } = default!;
 }
+

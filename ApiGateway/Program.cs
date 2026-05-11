@@ -2,7 +2,7 @@ using ApiGateway.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
-using Shared.Data;
+using Persistence.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

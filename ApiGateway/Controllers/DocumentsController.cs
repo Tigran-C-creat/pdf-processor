@@ -1,8 +1,6 @@
-﻿using Shared.Data;
-using Shared.Models;
+﻿using Persistence.Data;
 using ApiGateway.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ApiGateway.Controllers;
 

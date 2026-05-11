@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shared.Models;
+using Persistence.Models;
 
 
-namespace Shared.Data;
+namespace Persistence.Data;
 
 /// <summary>
 /// Контекст базы данных приложения.
@@ -18,4 +18,11 @@ public sealed class ApplicationDbContext : DbContext
     /// Таблица документов.
     /// </summary>
     public DbSet<Document> Documents => Set<Document>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Document>().ToTable("documents");
+    }
 }

@@ -1,7 +1,7 @@
 using BackgroundWorker;
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
-using Shared.Data;
+using Persistence.Data;
 
 var builder = Host.CreateApplicationBuilder(args);
 

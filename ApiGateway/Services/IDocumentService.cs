@@ -1,4 +1,4 @@
-﻿using Shared.Models;
+﻿using Persistence.Models;
 
 namespace ApiGateway.Services;
 

@@ -2,9 +2,10 @@ using System.Text;
 using System.Text.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Shared.Data;
-using Shared.Models;
+using Persistence.Data;
+using Persistence.Models;
 using UglyToad.PdfPig;
+using Contracts.Messages;
 
 namespace BackgroundWorker
 {
@@ -70,7 +71,6 @@ namespace BackgroundWorker
 
                     // Устанавливаем статус "В обработке"
                     doc.Status = DocumentStatus.Processing;
-                    doc.UpdatedAt = DateTime.UtcNow;
                     await db.SaveChangesAsync(stoppingToken);
                     _logger.LogInformation("Document {DocumentId} status changed to Processing", message.DocumentId);
                     // =============================================
@@ -113,7 +113,6 @@ namespace BackgroundWorker
                     doc.TextContent = extractedText.ToString();
                     doc.Status = DocumentStatus.Completed;
                     doc.ProcessedAt = DateTime.UtcNow;
-                    doc.UpdatedAt = DateTime.UtcNow;
 
                     await db.SaveChangesAsync(stoppingToken);
                     _logger.LogInformation("Document {DocumentId} updated in database with status {Status}",

@@ -6,17 +6,19 @@ WORKDIR /src
 
 # Копируем csproj-файлы
 COPY BackgroundWorker/*.csproj BackgroundWorker/
-COPY Shared/*.csproj Shared/
+COPY Persistence/*.csproj Persistence/
+COPY Contracts/*.csproj Contracts/
 
 # Восстанавливаем зависимости
-RUN dotnet restore BackgroundWorker/*.csproj
+RUN dotnet restore BackgroundWorker/BackgroundWorker.csproj
 
 # Копируем весь код
 COPY BackgroundWorker/ BackgroundWorker/
-COPY Shared/ Shared/
+COPY Persistence/ Persistence/
+COPY Contracts/ Contracts/
 
 # Публикуем
-RUN dotnet publish BackgroundWorker/*.csproj -c Release -o /app/publish
+RUN dotnet publish BackgroundWorker/BackgroundWorker.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

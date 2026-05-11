@@ -1,4 +1,4 @@
-﻿namespace Shared.Models;
+﻿namespace Persistence.Models;
 
 /// <summary>
 /// Статус обработки PDF‑документа.
