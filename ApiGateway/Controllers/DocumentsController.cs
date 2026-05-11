@@ -57,9 +57,7 @@ public class DocumentsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var docs = await _db.Documents
-            .OrderByDescending(d => d.CreatedAt)
-            .ToListAsync();
+        var docs = await _documentService.GetAllAsync();
 
         return Ok(docs);
     }

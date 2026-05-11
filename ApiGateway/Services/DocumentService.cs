@@ -3,6 +3,8 @@ using RabbitMQ.Client;
 using Shared.Models;
 using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace ApiGateway.Services;
 
@@ -17,6 +19,12 @@ public sealed class DocumentService(
 {
     private const string QueueName = "pdf_processing";
 
+    /// <summary>
+    /// Загружает PDF‑файл, сохраняет его в файловом хранилище
+    /// и инициирует асинхронную обработку через RabbitMQ.
+    /// </summary>
+    /// <param name="file">Загружаемый PDF‑файл.</param>
+    /// <returns>Идентификатор созданного документа.</returns>
     public async Task<Guid> UploadAsync(IFormFile file)
     {
         var storagePath = Path.Combine(env.ContentRootPath, "storage");
@@ -69,5 +77,15 @@ public sealed class DocumentService(
         );
 
         return id;
+    }
+
+    /// <summary>
+    /// Возвращает список всех документов, отсортированных по дате создания.
+    /// </summary>
+    public async Task<List<Document>> GetAllAsync()
+    {
+        return await db.Documents
+            .OrderByDescending(d => d.CreatedAt)
+            .ToListAsync();
     }
 }
