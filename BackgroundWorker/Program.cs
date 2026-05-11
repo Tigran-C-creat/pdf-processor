@@ -1,7 +1,8 @@
 using BackgroundWorker;
+using BackgroundWorker.Services;
 using Microsoft.EntityFrameworkCore;
-using RabbitMQ.Client;
 using Persistence.Data;
+using RabbitMQ.Client;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddSingleton<IConnection>(sp =>
 
     return factory.CreateConnectionAsync().GetAwaiter().GetResult();
 });
+
+builder.Services.AddScoped<IDocumentProcessingService, DocumentProcessingService>();
+builder.Services.AddScoped<IPdfExtractor, PdfExtractor>();
 
 builder.Services.AddHostedService<Worker>();
 
