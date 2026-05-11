@@ -21,4 +21,10 @@ public interface IDocumentService
     /// Возвращает список всех документов, отсортированных по дате создания.
     /// </summary>
     Task<List<Document>> GetAllAsync();
+
+    /// <summary>
+    /// Возвращает текстовое содержимое документа или статус его обработки.
+    /// </summary>
+    Task<(int StatusCode, string? Content)> GetContentAsync(Guid id);
+
 }

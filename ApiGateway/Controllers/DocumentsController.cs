@@ -63,8 +63,7 @@ public class DocumentsController : ControllerBase
     }
 
     /// <summary>
-    /// Возвращает текстовое содержимое PDF‑документа,
-    /// которое было извлечено Background Worker'ом.
+    /// Возвращает текстовое содержимое PDF‑документа
     /// </summary>
     /// <param name="id">Идентификатор документа.</param>
     /// <returns>
@@ -76,21 +75,15 @@ public class DocumentsController : ControllerBase
     [HttpGet("{id:guid}/content")]
     public async Task<IActionResult> GetContent(Guid id)
     {
-        var doc = await _db.Documents.FirstOrDefaultAsync(d => d.Id == id);
+        var (status, content) = await _documentService.GetContentAsync(id);
 
-        if (doc == null)
-            return NotFound();
-
-        if (doc.Status == DocumentStatus.Pending || doc.Status == DocumentStatus.Processing)
-            return StatusCode(202, "Документ ещё обрабатывается");
-
-        if (doc.Status == DocumentStatus.Failed)
-            return StatusCode(500, "Ошибка обработки документа");
-
-        return Ok(new
+        return status switch
         {
-            id = doc.Id,
-            text = doc.TextContent ?? string.Empty
-        });
+            200 => Ok(new { id, text = content }),
+            202 => StatusCode(202, content),
+            404 => NotFound(),
+            500 => StatusCode(500, content),
+            _ => StatusCode(500, "Неизвестная ошибка")
+        };
     }
 }

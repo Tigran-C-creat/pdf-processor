@@ -88,4 +88,24 @@ public sealed class DocumentService(
             .OrderByDescending(d => d.CreatedAt)
             .ToListAsync();
     }
+
+    /// <summary>
+    /// Возвращает текстовое содержимое PDF‑документа
+    /// </summary>
+    /// <param name="id">Идентификатор документа.</param>
+    public async Task<(int StatusCode, string? Content)> GetContentAsync(Guid id)
+    {
+        var doc = await db.Documents.FirstOrDefaultAsync(d => d.Id == id);
+
+        if (doc == null)
+            return (404, null);
+
+        if (doc.Status == DocumentStatus.Pending || doc.Status == DocumentStatus.Processing)
+            return (202, "Документ ещё обрабатывается");
+
+        if (doc.Status == DocumentStatus.Failed)
+            return (500, "Ошибка обработки документа");
+
+        return (200, doc.TextContent ?? string.Empty);
+    }
 }
